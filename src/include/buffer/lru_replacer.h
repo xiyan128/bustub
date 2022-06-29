@@ -14,6 +14,7 @@
 
 #include <list>
 #include <mutex>  // NOLINT
+#include <unordered_map>
 #include <vector>
 
 #include "buffer/replacer.h"
@@ -46,7 +47,15 @@ class LRUReplacer : public Replacer {
   size_t Size() override;
 
  private:
-  // TODO(student): implement me!
+  using ListNode =
+      std::list<frame_id_t>::iterator;  // first is whether it is pinned, second is the iterator to the list
+
+  std::unordered_map<frame_id_t, ListNode> cache_;
+  std::list<frame_id_t> lru_list_;
+
+  size_t capacity_;
+
+  std::mutex lru_latch_;
 };
 
 }  // namespace bustub
